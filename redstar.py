@@ -88,9 +88,7 @@ class Rs:
         
         # rs queue management (data storage)        
         for i in range(4, 12) :
-            role = discord.utils.get(
-              Rs.guild.roles, name = getattr ( params, f'RS{i}_ROLE' )
-              ).mention
+            role = discord.utils.get(Rs.guild.roles, name = getattr (params, f'RS{i}_ROLE') ).mention
             globals()[f'qm{i}'] = QueueManager( f'RS{i}', i, 0xff3300, role)
         RSqms = [ 0, 1, 2, 3, qm4, qm5, qm6, qm7, qm8, qm9, qm10, qm11 ]
         Rs.qms = RSqms [min(star_range) : max(star_range)+1]

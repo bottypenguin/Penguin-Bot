@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "rsclub"
+name = "PenguinBot"
 version = "0.1.0"
 description = ""
-authors = ["Groeli"]
+authors = ["Zofia"]
 
 [tool.poetry.dependencies]
 python = "^3.8"

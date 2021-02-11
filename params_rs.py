@@ -1,7 +1,7 @@
 ###################################################
 # DISCORD                                         #
 ###################################################
-DEBUG_MODE = False
+DEBUG_MODE = True
 SERVER_DEBUG_CHANNEL_ID = 809062902967435274 #log
 SERVER_BUG_CHANNEL_ID = 809062936416878622 #bug reporting
 SERVER_DISCORD_ID = 382153815073488898

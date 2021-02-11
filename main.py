@@ -9,7 +9,8 @@ from redstar import Rs
 from keep_awake import keep_awake # used to keep the server awake otherwise it goes to sleep after 1h of inactivity
 
 #intents = discord.Intents.default()
-#intents.members = True
+#intents.members = True haslodogithuba@zofia
+
 
 bot = discord.ext.commands.Bot(command_prefix=['!']) #, intents=intents)
 bot.remove_command('help')
