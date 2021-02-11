@@ -42,7 +42,7 @@ def convert_int_to_icon(number: int):
   i2e={}
   for i in Rs.star_range :
     n = (f'RS{i}_EMOJI')
-    i2e[i] = [getattr(params,n)]
+    i2e[i] = getattr(params,n)
   return i2e[number]
 
 class Rs:
@@ -88,7 +88,9 @@ class Rs:
         
         # rs queue management (data storage)        
         for i in range(4, 12) :
-            role = discord.utils.get(Rs.guild.roles, name = getattr (params, f'RS{i}_ROLE') ).mention
+            role = discord.utils.get(
+              Rs.guild.roles, name = getattr ( params, f'RS{i}_ROLE' )
+              ).mention
             globals()[f'qm{i}'] = QueueManager( f'RS{i}', i, 0xff3300, role)
         RSqms = [ 0, 1, 2, 3, qm4, qm5, qm6, qm7, qm8, qm9, qm10, qm11 ]
         Rs.qms = RSqms [min(star_range) : max(star_range)+1]
@@ -110,8 +112,9 @@ class Rs:
 
         # rs run stats
         for i in Rs.star_range :
-            Rs.stats[i-min(Rs.star_range)] = (f'RS{i} : 0')
-
+            Rs.stats[f'RS{i}'] = 0
+            
+        print(f'\n\n{Rs.stats}\n\n')
         Rs._read_rs_records()
 
     @staticmethod
@@ -869,7 +872,7 @@ class Rs:
                 msg = await bot.get_channel(
                     params.SERVER_RS_CHANNEL_ID
                 ).fetch_message(Rs.afk_check_messages[player_id])
-                await msg.delete(delay=params.MSG_DELETION_DELAY)
+                await msg.delete(delay=1)
                 Rs.afk_check_messages.pop(player_id)
             except discord.errors.NotFound:
                 pass
@@ -894,8 +897,8 @@ class Rs:
         # ping all players
         pings = [p.discord_mention for p in qm.queue]
         msg = ', '.join(pings)
-        msg = f'🇷🇸{convert_int_to_icon(qm.level)} ready! ' + msg + ' Meet where?\n'
-        m = await bot.get_channel(params.SERVER_RS_CHANNEL_ID).send(msg)
+        msg = f':regional_indicator_r::regional_indicator_s:{convert_int_to_icon(qm.level)} ready! ' + msg + ' Meet where?\n'
+        m = await bot.get_channel(params.SERVER_RS_CHANNEL_ID).send(msg, delete_after = params.INFO_DISPLAY_TIME)
         
         # remove players from other queues and/or remove any pending afk checks if applicable
         for p in qm.queue:
@@ -1072,8 +1075,7 @@ class Rs:
         embed = discord.Embed(color=params.EMBED_COLOR)
         embed.set_author(name='RS Queue Help',
                          icon_url=params.BOT_DISCORD_ICON)
-        embed.set_footer(
-            text=f'Called by {ctx.author.display_name}\nDeleting in 2 min.')
+        embed.set_footer(text=f'Called by {ctx.author.display_name}\nDeleting in {params.HELP_DELETION_DELAY} sec')
         embed.add_field(name="`!in`",
                         value="Sign up for your highest RS level.",
                         inline=False)
@@ -1095,7 +1097,7 @@ class Rs:
                         inline=False)
         Rs.last_help_message = await ctx.channel.send(content=None,
                                                       embed=embed)
-        await Rs.last_help_message.delete(delay=2 * 60)
+        await Rs.last_help_message.delete(params.HELP_DELETION_DELAY)
 
     @staticmethod
     def _record_rs_run(rs_level: int, queue: List[player.Player]):
@@ -1106,7 +1108,7 @@ class Rs:
         plist = ''
         for p in queue:
             plist = plist + f'{p.discord_name} ({p.discord_id}); '
-        line = f'{time.asctime()}\tRS{rs_level}:\t{len(queue)}/4:\t{plist}'
+        line = f'{time.asctime()}\tRS{rs_level}\t{len(queue)}/4\t{plist}'
 
         completed_queues_file = open("rs/completed_queues.txt",
                                      "a",
@@ -1120,15 +1122,15 @@ class Rs:
     @staticmethod
     def _read_rs_records():
 
-        completed_queues_file = open("rs/completed_queues.txt",
-                                     "r",
-                                     encoding="utf-8")
+        completed_queues_file = open("rs/completed_queues.txt", "r", encoding="utf-8")
         queues = completed_queues_file.readlines()
+        
 
         for q in queues:
             tokens = q.split('\t')
-            qm_name = tokens[1].replace(':', '')
-            q_len = int(tokens[2].split('/')[1].replace(':', ''))
+            qm_name = tokens[1]
+            q_len = int(tokens[2].split('/')[1])
+
             if q_len > 0:
                 Rs.stats[qm_name] += 1
 
