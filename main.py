@@ -14,6 +14,8 @@ bot = discord.ext.commands.Bot(command_prefix=['!']) #, intents=intents)
 bot.remove_command('help')
 bot_ready = True
 dbg_ch = bot.get_channel(params.SERVER_DEBUG_CHANNEL_ID)
+# Last_help_message = None
+
 
 # Help command  
 
@@ -28,26 +30,39 @@ async def cmd_help(ctx: discord.ext.commands.Context):
     await ctx.message.delete(delay=params.MSG_DELETION_DELAY)
     print(f'cmd_help(): called by {ctx.author} using "{ctx.message.content}" in #{ctx.channel.name}')
 
-    # relay
-    Rs.add_job(Rs.show_help, [ctx])
+    # last_help_message = Last_help_message
+    last_help_message = None
 
+    if last_help_message is not None:
+        await last_help_message.delete()
 
-# RS queue commands
-# module: m_redstar.py
+    embed = discord.Embed(color=params.EMBED_COLOR)
+    embed.set_author(name='RS Queue Help',
+                      icon_url=params.BOT_DISCORD_ICON)
+    embed.set_footer(text=f'Called by {ctx.author.display_name}\nDeleting in {params.HELP_DELETION_DELAY} sec')
+    embed.add_field(name="`!in`",
+                    value="Sign up for your highest RS level.",
+                    inline=False)
+    embed.add_field(name="`!in X [note]`",
+                    value="Sign up for RS level X (optional: with note).",
+                    inline=False)
+    embed.add_field(name="`!out`", value="Leave all queues.", inline=False)
+    embed.add_field(name="`!out X`",
+                    value="Leave queue of RS level X.",
+                    inline=False)
+    embed.add_field(name="`!q`",
+                    value="Display running queues.",
+                    inline=False)
+    embed.add_field(name="`!start X`",
+                    value="Early start RS level X queue.",
+                    inline=False)
+    embed.add_field(name="`!clear X`",
+                    value="Clear queue for RS level X.",
+                    inline=False)
+    last_help_message = await ctx.channel.send(embed=embed)
+    await last_help_message.delete(delay=params.HELP_DELETION_DELAY)
 
-@bot.command(name='rshelp', help='rs help page', aliases=params.rs_help_aliases)
-async def cmd_rs_help(ctx: discord.ext.commands.Context):
-    """
-    General help command
-    :param ctx:
-    :return:
-    """
-    # standard handling of commands
-    await ctx.message.delete(delay=params.MSG_DELETION_DELAY)
-    print(f'cmd_rs_help(): called by {ctx.author} using "{ctx.message.content}" in #{ctx.channel.name}')
-
-    #await Rs.show_help(ctx)
-    Rs.add_job(Rs.show_help, [ctx])
+    globals()['Last_help_message'] = last_help_message
 
 
 @bot.command(name='rsstats', help='RS statistics', aliases=params.rs_stats_aliases)
@@ -62,17 +77,17 @@ async def cmd_rs_stats(ctx: discord.ext.commands.Context):
     await ctx.message.delete(delay=params.MSG_DELETION_DELAY)
     print(f'cmd_rs_stats(): called by {ctx.author} using "{ctx.message.content}" in #{ctx.channel.name}')
 
-    embed = discord.Embed(color=params.EMBED_QUEUE_COLOR)
-    embed.set_author(name='RS Counter', icon_url= params.SERVER_DISCORD_ICON)
+    embed = discord.Embed(color=params.EMBED_COLOR)
+    embed.set_author(name='RS Counter \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800   \u2800', icon_url= params.SERVER_DISCORD_ICON)
     embed.set_footer(text=f'Called by {ctx.author.display_name}\nDeleting in {params.HELP_DELETION_DELAY} sec')
 
     rs_chan = bot.get_channel(params.SERVER_RS_CHANNEL_ID)
-    text = f'Total Runs in {rs_chan.mention}\n\n'
+    text = f'Total Runs \n' # in {rs_chan.mention}
     total = sum(Rs.stats.values())
+
     for rs, cnt in Rs.stats.items():
         lvl = int(rs.replace('RS', ''))
-        if lvl == 11:
-            break
+        if lvl == params.SUPPORTED_RS_LEVELS_MAX +1 : break
         text += f'**{rs}**: {cnt} _({round(cnt/total*100)}%)_\n'
 
     embed.description = text
@@ -96,8 +111,8 @@ async def cmd_rs_rules(ctx: discord.ext.commands.Context):
 
     
     embed.description = text
-    await ctx.send(embed=embed)
-
+    m = await ctx.send(embed=embed)
+    await m.delete(delay=params.RULES_DELETION_DELAY)
 
 @bot.command(name='enter', help='Join the RS queue', aliases=params.enter_queue_aliases)
 async def cmd_enter_rs_queue(ctx: discord.ext.commands.Context, level_arg: str = '0', *, comment: str = ''):
@@ -361,7 +376,7 @@ async def on_command_error(ctx, error):
     print(f'on_command_error(): message was: "{ctx.message.content}" sent by {ctx.author.name} in #{ctx.channel.name}')
 
     
-    await dbg_ch.send(f'**ERROR**\n{error}\n**REASON**\n"{ctx.message.content}" sent by {ctx.author.name} in #{ctx.channel.name}')
+    print(f'**ERROR**\n{error}\n**REASON**\n"{ctx.message.content}" sent by {ctx.author.name} in #{ctx.channel.name}')
 
     try:
         await ctx.message.add_reaction('🤖')

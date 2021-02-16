@@ -5,8 +5,13 @@ DEBUG_MODE = False
 SERVER_DEBUG_CHANNEL_ID = 809062902967435274 #log
 SERVER_BUG_CHANNEL_ID = 809062936416878622 #bug reporting
 SERVER_DISCORD_ID = 382153815073488898
-SERVER_DISCORD_NAME = "Penguin RS Hub"
-SERVER_DISCORD_ICON = "https://cdn.discordapp.com/app-icons/808651447788240947/8015244e63042f89330c2a692d6e9e28.png?size=256"
+SERVER_DISCORD_NAME = ''
+SERVER_DISCORD_ICON = 'https://cdn.discordapp.com/avatars/808651447788240947/c63129c514d7cf1d1b6528969fcb06e6.png?size=1024'
+
+BOT_DISCORD_ICON = SERVER_DISCORD_ICON
+
+QUEUE_EMBED_ICON = ''
+QUEUE_EMBED_TITLE = ''
 
 BOT_DISCORD_ICON = SERVER_DISCORD_ICON
 RS_ICON = '<:StarRedStar:512096841056124960>'
@@ -23,8 +28,8 @@ TIME_BOT_Q_TASK_RATE = 30
 TIME_SPAM_BRAKE = 1
 TIME_AFK_WARN = 60 * 10  # afk warning as ping; afk_flag set in checker task after warning!
 TIME_AFK_KICK = 60 * 15  # kick if warning ignored. must be bigger than TIME_AFK_WARN!
-TIME_Q_REPOST = 10
-TIME_Q_REPOST_COOLDOWN = 1
+TIME_Q_REPOST = 3
+TIME_Q_REPOST_COOLDOWN = 1.2
 MSG_DELETION_DELAY = 7
 RULES_DELETION_DELAY = 60 * 3
 HELP_DELETION_DELAY = 30
@@ -64,7 +69,7 @@ RS9_ROLE = 'RS9'
 RS10_ROLE = 'RS10'
 RS11_ROLE = 'RS11'
 
-RS_ROLES = [RS4_ROLE, RS5_ROLE, RS6_ROLE, RS7_ROLE, RS8_ROLE, RS9_ROLE, RS10_ROLE]
+RS_ROLES = [RS4_ROLE, RS5_ROLE, RS6_ROLE, RS7_ROLE, RS8_ROLE, RS9_ROLE, RS10_ROLE, RS11_ROLE]
 
 RESTRICTING_ROLES =  ['no4','no5','no6','no7','no8','no9','no10','no11'] # for players who can't make it in given RS level
 
@@ -74,6 +79,7 @@ SERVER_SOFT_PING_ROLES = SERVER_PING_ROLES
 SERVER_SOFT_NO_ROLES = SERVER_PING_ROLES
 # ['rs4n','rs5n','rs6n','rs7n','rs8n','rs9n','rs10n','rs11n'] # 4/4
 
+OLD_STARS = {'RS6' : 214, 'RS7' : 320, 'RS8' : 1409, 'RS9' : 3131, 'RS10' : 10}
 
 ###################################################
 # COMMAND ALIASES                                 #
@@ -83,7 +89,7 @@ help_aliases = ['h', 'H', 'Help']
 # RS
 rs_help_aliases = ['rsh']
 rs_aliases = ['rsc', 'Rs', 'rS', 'RS', 'RSC', 'Rsc']
-rs_stats_aliases = []
+rs_stats_aliases = ['st', 't']
 rs_rules_aliases = ['r', 'rsr', 'rsrule', 'rule', 'rules']
 display_queue_aliases = ['q', 'Q', 'queue', 'Queue']
 enter_queue_aliases = ['i', 'I', 'in', 'In', 'IN', 'iN', 'join', 'Join']
@@ -95,8 +101,8 @@ rs_clean_aliases = []
 ###################################################
 # APPEARANCE                                      #
 ###################################################
-EMBED_COLOR = 0xff6600
-EMBED_QUEUE_COLOR = 0x2f3136
+EMBED_COLOR = 0x43b581
+QUEUE_EMBED_COLOR = 0x2f3136
 
 # rs emojis
 RS0_EMOJI = "0️⃣"
@@ -110,10 +116,11 @@ RS7_EMOJI = "7️⃣"
 RS8_EMOJI = "8️⃣"
 RS9_EMOJI = "9️⃣"
 RS10_EMOJI = "🔟"
-RS11_EMOJI = "<:eleven:760869824036601939>"
-RS11_EMOJI_ID = 760869824036601939
+RS11_EMOJI = "⏸️"
+# RS11_EMOJI = "<:eleven:760869824036601939>"
+# RS11_EMOJI_ID = 760869824036601939
 
-RS_EMOJIS =  [RS4_EMOJI, RS5_EMOJI, RS6_EMOJI, RS7_EMOJI, RS8_EMOJI, RS9_EMOJI, RS10_EMOJI]
+RS_EMOJIS =  [RS4_EMOJI, RS5_EMOJI, RS6_EMOJI, RS7_EMOJI, RS8_EMOJI, RS9_EMOJI, RS10_EMOJI, RS11_EMOJI]
 
 # dialogues
 JOIN_EMOJI = "🆕"
@@ -171,8 +178,11 @@ Anyways, use !agree to get access to the RS queue. \
 If at any point you wish to no longer have access, use !leave. We are happy you are choosing to run Red Stars with us!"
 TEXT_RULES = TEXT_RULES_EN
 
+TEXT_NOROLESET = "you didn't select the"
+TEXT_MEET_WERE = ''
+
 # @zofia: careful with mobile version of discord!
 # @BenSmith30: I think this is exactly what fits on mobile... No?
-#TEXT_FOOTER_TEXT = '___________________________________________________\n' \
 #+ DOWN_EMOJI +'Join.Unirse.Вступать.加入 Quit.Dejar.Уехать.退出'+ LEAVE_EMOJI
-TEXT_FOOTER_TEXT = '\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f' #this is a stupid Zofia's hack to keep the minimal width od embedd sensible
+
+TEXT_FOOTER_TEXT = '\u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800 \u2800   \u2800' # Zofia' magic works on mobile and pc
