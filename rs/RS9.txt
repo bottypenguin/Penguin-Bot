@@ -1,1 +1,1 @@
-{"py/tuple": [1614608539.74945, 1614608539.7503269, []]}
+{"py/tuple": [1614611165.3455095, 1614611165.346427, [{"py/object": "player.Player", "discord_name": "Beren#1882", "discord_nick": "Beren", "discord_mention": "<@688790681841434687>", "discord_id": 688790681841434687, "note": "", "mates": 0, "afk_flag": false, "timer": 1614611165.3455048, "afk_timer": 380}]]}
