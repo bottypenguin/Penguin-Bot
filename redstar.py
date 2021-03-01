@@ -87,7 +87,6 @@ class Rs:
                 logger.error(f"unable to retrieve role {role_name}, bot will NOT operate as intended")
                 raise Exception(f"unable to retrieve role {role_name}, bot will NOT operate as intended")
         
-        
         # rs queue management (data storage)        
         for i in (star_range) :
             role = discord.utils.get(
