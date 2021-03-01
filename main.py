@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 import params_rs as params
 from redstar import Rs
 from keep_awake import keep_awake # used to keep the server awake otherwise it goes to sleep after 1h of inactivity
+import dotenv
 
 #intents = discord.Intents.default()
 #intents.members = True
@@ -14,8 +15,6 @@ bot = discord.ext.commands.Bot(command_prefix=['!']) #, intents=intents)
 bot.remove_command('help')
 bot_ready = True
 dbg_ch = bot.get_channel(params.SERVER_DEBUG_CHANNEL_ID)
-# Last_help_message = None
-
 
 # Help command  
 
@@ -64,8 +63,8 @@ async def cmd_help(ctx: discord.ext.commands.Context):
 
     globals()['Last_help_message'] = last_help_message
 
-
 @bot.command(name='rsstats', help='RS statistics', aliases=params.rs_stats_aliases)
+
 async def cmd_rs_stats(ctx: discord.ext.commands.Context):
     """
     Display RS statistics
@@ -94,7 +93,8 @@ async def cmd_rs_stats(ctx: discord.ext.commands.Context):
     m = await ctx.send(embed=embed)
     await m.delete(delay=params.HELP_DELETION_DELAY)
 
-@bot.command(name='rsrules', help='rsrules', aliases=params.rs_rules_aliases)
+@bot.command(name='rsrules', help='rsrules', aliases=params.rs_rules_aliases)  
+
 async def cmd_rs_rules(ctx: discord.ext.commands.Context):
     await ctx.message.delete()
 
@@ -104,9 +104,8 @@ async def cmd_rs_rules(ctx: discord.ext.commands.Context):
       channel = bot.get_channel(params.RULES_CHANNEL_ID)
       message = await channel.fetch_message(params.RULES_MESSAGE_ID) #.content
       text = message.content
-
     embed = discord.Embed(color=params.EMBED_COLOR, delete_after = params.RULES_DELETION_DELAY)
-    embed.set_author(name= params.TEXT_RULES_TITLE, icon_url=params.SERVER_DISCORD_ICON)
+    embed.set_author(name= f'{params.TEXT_RULES_TITLE}', icon_url=params.SERVER_DISCORD_ICON)
     embed.set_footer(text=f'Called by {ctx.author.display_name}\nDeleting in {int("{:.0f}".format(params.RULES_DELETION_DELAY/60))} min')
 
     
@@ -115,6 +114,7 @@ async def cmd_rs_rules(ctx: discord.ext.commands.Context):
     await m.delete(delay=params.RULES_DELETION_DELAY)
 
 @bot.command(name='enter', help='Join the RS queue', aliases=params.enter_queue_aliases)
+
 async def cmd_enter_rs_queue(ctx: discord.ext.commands.Context, level_arg: str = '0', *, comment: str = ''):
     """
     Join RS queue
@@ -138,8 +138,8 @@ async def cmd_enter_rs_queue(ctx: discord.ext.commands.Context, level_arg: str =
         for level in levels:
             Rs.add_job(Rs.enter_queue, [ctx.author, int(level), comment, False, False])
 
-
 @bot.command(name='leave', help='Leave the RS queue', aliases=params.leave_queue_aliases)
+
 async def cmd_leave_rs_queue(ctx: discord.ext.commands.Context, *, level_arg: str = '0'):
     """
     Leave RS queue(s)
@@ -162,8 +162,8 @@ async def cmd_leave_rs_queue(ctx: discord.ext.commands.Context, *, level_arg: st
         for level in levels:
             Rs.add_job(Rs.leave_queue, [ctx.author, int(level), False, False, False, None])
 
-
 @bot.command(name='display', help='Display the current RS queues', aliases=params.display_queue_aliases)
+
 async def cmd_display_rs_queues(ctx: discord.ext.commands.Context):
     """
     Display current queues that contain at least one player
@@ -182,8 +182,8 @@ async def cmd_display_rs_queues(ctx: discord.ext.commands.Context):
     # relay command to module
     Rs.add_job(Rs.display_queues, [False])
 
-
 @bot.command(name='start', help='Start a queue early', aliases=params.start_queue_aliases)
+
 async def cmd_start_rs_queue(ctx: discord.ext.commands.Context, level: str):
     """
     Start a certain queue
@@ -201,7 +201,6 @@ async def cmd_start_rs_queue(ctx: discord.ext.commands.Context, level: str):
 
     # relay command to module
     Rs.add_job(Rs.start_queue, [ctx.author, int(level)])
-
 
 @bot.command(name='clear', help='Clear a queue', aliases=params.clear_queue_aliases)
 async def cmd_clear_rs_queue(ctx: discord.ext.commands.Context, level: str):
@@ -406,4 +405,5 @@ def handle_exit():
 # start
 keep_awake()
 print('main: connecting...')
+dotenv.load_dotenv(verbose=True)
 bot.run(os.getenv("DISCORD_TOKEN"))
